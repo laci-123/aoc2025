@@ -25,6 +25,26 @@ func parseRotation(rotation string) (int, error) {
 	return sign * size, nil
 }
 
+func readInput() ([]int, error) {
+	rotations := make([]int, 0)
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		text := scanner.Text()
+		if text == "" {
+			continue
+		}
+		rotation, err := parseRotation(text)
+		if err != nil {
+			return nil, err
+		}
+		rotations = append(rotations, rotation)
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("error reading stdin")
+	}
+	return rotations, nil
+}
+
 // modulo function: unllike a%b (remainder) the result is always non-negative
 func mod(a int, b int) int {
     m := a % b
@@ -34,35 +54,62 @@ func mod(a int, b int) int {
     return m
 }
 
-func part1() (int, error) {
+func rotateDial(dial int, rotation int) (int, int) {
+	newDial := dial + rotation
+	sum := 0
+	if rotation > 0 {
+		for newDial >= 100 {
+			newDial -= 100
+			sum += 1
+		}
+	} else {
+		for newDial < 0 {
+			newDial += 100
+			sum += 1
+		}
+	}
+	return newDial, sum
+}
+
+func part1(rotations []int) (int, error) {
 	dial := 50
 	sum := 0
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		text := scanner.Text()
-		if text == "" {
-			continue
-		}
-		rotation, err := parseRotation(text)
-		if err != nil {
-			return 0, err
-		}
+	for _, rotation := range rotations {
 		dial = mod(dial + rotation, 100)
 		if dial == 0 {
 			sum += 1
 		}
 	}
-	if err := scanner.Err(); err != nil {
-		return 0, fmt.Errorf("error reading stdin")
+	return sum, nil
+}
+
+func part2(rotations []int) (int, error) {
+	dial := 50
+	sum := 0
+	for _, rotation := range rotations {
+		dial = mod(dial + rotation, 100)
+		if dial == 0 {
+			sum += 1
+		}
 	}
 	return sum, nil
 }
 
 func main() {
-	result, err := part1()
+	rotations, err := readInput()
 	if err != nil {
-		fmt.Println("ERROR: ", err)
-	} else {
-		fmt.Println(result)
+		panic(err)
+	} 
+
+	result1, err := part1(rotations)
+	if err != nil {
+		panic(err)
+	} 
+	fmt.Println("part 1 result: ", result1)
+
+	result2, err := part2(rotations)
+	if err != nil {
+		panic(err)
 	}
+	fmt.Println("part 2 result: ", result2)
 }
