@@ -55,20 +55,19 @@ func mod(a int, b int) int {
 }
 
 func rotateDial(dial int, rotation int) (int, int) {
-	newDial := dial + rotation
 	sum := 0
-	if rotation > 0 {
-		for newDial >= 100 {
-			newDial -= 100
-			sum += 1
-		}
+	var step int
+	if rotation < 0 {
+		step = -1
 	} else {
-		for newDial < 0 {
-			newDial += 100
+		step = 1
+	}
+	for i := 0; i != rotation; i += step {
+		if mod(dial + i, 100) == 0 {
 			sum += 1
 		}
 	}
-	return newDial, sum
+	return mod(dial + rotation, 100), sum
 }
 
 func part1(rotations []int) (int, error) {
@@ -87,10 +86,9 @@ func part2(rotations []int) (int, error) {
 	dial := 50
 	sum := 0
 	for _, rotation := range rotations {
-		dial = mod(dial + rotation, 100)
-		if dial == 0 {
-			sum += 1
-		}
+		var s int
+		dial, s = rotateDial(dial, rotation)
+		sum += s
 	}
 	return sum, nil
 }
