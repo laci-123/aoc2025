@@ -39,12 +39,39 @@ func isRepeated(s string) bool {
 	return s[:m] == s[m:]
 }
 
+func isRepeated2(s string) bool {
+	outer:
+	for i := 1; i < len(s); i += 1 {
+		t := s[0:i]
+		for j := i; j < len(s); j += i {
+			to := min(j+i, len(s))
+			if s[j:to] != t {
+				continue outer
+			}
+		}
+		return true
+	}
+	return false
+}
+
 
 func part1(ranges []Range) int {
 	sum := 0
 	for _, r := range ranges {
 		for i := r.from; i <= r.to; i += 1 {
 			if isRepeated(strconv.Itoa(i)) {
+				sum += i
+			}
+		}
+	}
+	return sum
+}
+
+func part2(ranges []Range) int {
+	sum := 0
+	for _, r := range ranges {
+		for i := r.from; i <= r.to; i += 1 {
+			if isRepeated2(strconv.Itoa(i)) {
 				sum += i
 			}
 		}
@@ -60,4 +87,7 @@ func main() {
 
 	result1 := part1(ranges)
 	fmt.Println("part 1 result: ", result1)
+
+	result2 := part2(ranges)
+	fmt.Println("part 2 result: ", result2)
 }
