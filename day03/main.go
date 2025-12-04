@@ -33,14 +33,6 @@ func readInput() ([]BatteryBank, error) {
 	return bank, nil
 }
 
-func pow10(p int) int {
-	x := 1
-	for i := 0; i < p ; i += 1 {
-		x *= 10
-	}
-	return x
-}
-
 func calcJoltage(digits map[int]int, newDigit int, newDigitPos int, k int) int {
 	p := 1
 	sum := 0
@@ -53,7 +45,6 @@ func calcJoltage(digits map[int]int, newDigit int, newDigitPos int, k int) int {
 			p *= 10
 		}
 	}
-	// fmt.Printf(">>> %v, %v, %v --> %v\n", digits, newDigitPos, newDigit, sum)
 	return sum
 }
 
