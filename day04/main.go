@@ -31,7 +31,29 @@ func readInput() (map[PaperRoll]int, error) {
 	return rolls, nil
 }
 
-
+func removeRolls(rolls map[PaperRoll]int) int {
+	toBeRemoved := make([]PaperRoll, 0)
+	for roll := range rolls {
+		if rolls[roll] == 0 {
+			continue
+		}
+		s := rolls[PaperRoll{x: roll.x - 1, y: roll.y - 1}]
+		s += rolls[PaperRoll{x: roll.x - 1, y: roll.y}]
+		s += rolls[PaperRoll{x: roll.x - 1, y: roll.y + 1}]
+		s += rolls[PaperRoll{x: roll.x,     y: roll.y - 1}]
+		s += rolls[PaperRoll{x: roll.x,     y: roll.y + 1}]
+		s += rolls[PaperRoll{x: roll.x + 1, y: roll.y - 1}]
+		s += rolls[PaperRoll{x: roll.x + 1, y: roll.y}]
+		s += rolls[PaperRoll{x: roll.x + 1, y: roll.y + 1}]
+		if s < 4 {
+			toBeRemoved = append(toBeRemoved, roll)
+		}
+	}
+	for _, r := range toBeRemoved {
+		rolls[r] = 0
+	}
+	return len(toBeRemoved)
+}
 
 func part1(rolls map[PaperRoll]int) int {
 	sum := 0
@@ -51,6 +73,16 @@ func part1(rolls map[PaperRoll]int) int {
 	return sum
 }
 
+func part2(rolls map[PaperRoll]int) int {
+	sum := 0
+	removed := -1
+	for removed != 0 {
+		removed = removeRolls(rolls)
+		sum += removed
+	}
+	return sum
+}
+
 func main() {
 	rolls, err := readInput()
 	if err != nil {
@@ -59,4 +91,7 @@ func main() {
 
 	result1 := part1(rolls)
 	fmt.Println("part 1 result: ", result1)
+
+	result2 := part2(rolls)
+	fmt.Println("part 2 result: ", result2)
 }
