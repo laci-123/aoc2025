@@ -41,13 +41,14 @@ func parseInput(input []byte) Diagram {
 }
 
 func beam(x, y, height int, splitters map[Splitter]bool) {
-	fmt.Println(x, y, height)
 	for y < height {
 		sp := Splitter{x, y}
-		if _, ok := splitters[sp]; ok {
-			splitters[sp] = true
-			beam(x-1, y+1, height, splitters)
-			beam(x+1, y+1, height, splitters)
+		if alreadyHit, ok := splitters[sp]; ok {
+			if !alreadyHit {
+				splitters[sp] = true
+				beam(x-1, y+1, height, splitters)
+				beam(x+1, y+1, height, splitters)
+			}
 			break
 		} else {
 			y += 1
